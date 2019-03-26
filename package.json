@@ -1,0 +1,22 @@
+{
+  "name": "fill_blank",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd client && npm run-script build",
+    "install": "(cd client && npm install) && (cd server && npm install)",
+    "heroku-postbuild": "cd client && npm run-script build",
+    "start": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
+    "prod": "cd server && npm run-script prod"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^4.1.0"
+  },
+  "engines": {
+    "node": "8.1.3",
+    "npm": "6.4.1"
+ }
+}
