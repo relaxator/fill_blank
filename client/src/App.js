@@ -1,10 +1,8 @@
 import React from "react";
 import io from "socket.io-client";
 
-// const socket = io.connect("https://fill-blank.herokuapp.com/");
+const socket = io.connect("https://fill-blank.herokuapp.com/");
 
-const socket = io.connect("http://localhost:8080/");
-// const io = openSocket("http://192.168.1.13:8080");
 
 class App extends React.Component {
 
