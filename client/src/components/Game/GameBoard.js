@@ -127,6 +127,9 @@ class GameBoard extends React.Component {
 		socket.removeListener("playerList");
 		socket.removeListener("gameCompleted");
 		socket.removeListener("GamePlayer");
+		socket.removeListener("startVote");
+		socket.removeListener("NextRound");
+		socket.removeListener("updatePlayerList");
 	}
 
 	WaitSubmit = () => {
@@ -159,11 +162,18 @@ class GameBoard extends React.Component {
 						this.state.room,
 						this.state.pseudo
 					);
+
+					socket.isHost = false;
+					socket.Pseudo = "";
 				} else {
-					socket.disconnect();
+					socket.isHost = false;
+					socket.Pseudo = "";
 				}
 			}
 		}
+
+		socket.isHost = false;
+		socket.Pseudo = "";
 
 		this.setState({
 			deconnexion: true
