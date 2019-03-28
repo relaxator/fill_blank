@@ -13,18 +13,21 @@ class GameForm extends React.Component {
 	};
 
 	componentDidMount() {
-	    const { socket } = this.props;
-	    socket.on("createError", this.CreateError);
+		const { socket } = this.props;
+		socket.on("createError", this.CreateError);
+		socket.on("disconnect", () => {
+			window.location.reload();
+		});
 	}
 
 	componentWillUnmount() {
 		const { socket } = this.props;
-	    socket.removeListener('createError', this.CreateError);
+		socket.removeListener("createError", this.CreateError);
 	}
 
 	CreateError = err => {
 		this.setState({ error: err });
-	}
+	};
 
 	GameCreate = () => {
 		this.setState({ create: true });
@@ -37,7 +40,6 @@ class GameForm extends React.Component {
 	};
 
 	submitGame = data => {
-
 		const { socket } = this.props;
 
 		socket.emit("create", data);
@@ -56,7 +58,6 @@ class GameForm extends React.Component {
 	joinGame = data => {
 		const { socket } = this.props;
 
-
 		socket.emit("join", data);
 
 		socket.on("GameJoin", (games, id) => {
@@ -70,7 +71,6 @@ class GameForm extends React.Component {
 
 	render() {
 		const { create, join } = this.state;
-		
 
 		return (
 			<div>

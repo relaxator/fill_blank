@@ -36,7 +36,6 @@ class GameBoard extends React.Component {
 	componentWillMount() {
 		const { socket } = this.props;
 
-
 		if (socket.pseudo) {
 			var games = this.props.location.state.games;
 			var id = this.props.location.state.id;
@@ -66,7 +65,6 @@ class GameBoard extends React.Component {
 
 		const room = this.state.room;
 		if (socket.pseudo) {
-
 			socket.emit("playerList", room);
 
 			socket.on("GameReady", (questions, group, game) => {
@@ -133,7 +131,6 @@ class GameBoard extends React.Component {
 	}
 
 	WaitSubmit = () => {
-
 		const { socket } = this.props;
 		socket.emit("GameWait", this.state.room);
 	};
@@ -148,7 +145,6 @@ class GameBoard extends React.Component {
 		}
 
 		if (this.state.game !== "undefined") {
-
 			if (this.state.playerList.length === 1) {
 				socket.emit(
 					"gameCompleted",
@@ -168,6 +164,7 @@ class GameBoard extends React.Component {
 				} else {
 					socket.isHost = false;
 					socket.Pseudo = "";
+					socket.disconnect();
 				}
 			}
 		}
@@ -178,7 +175,6 @@ class GameBoard extends React.Component {
 		this.setState({
 			deconnexion: true
 		});
-
 	};
 
 	sendAnswer = answer => {
@@ -211,7 +207,6 @@ class GameBoard extends React.Component {
 				</Segment>
 			);
 		} else {
-
 			playerList = (
 				<Segment>
 					<Header>Players list</Header>
@@ -232,7 +227,6 @@ class GameBoard extends React.Component {
 					}}
 				/>
 			);
-
 		} else {
 			if (start === true) {
 				gameBoard = (

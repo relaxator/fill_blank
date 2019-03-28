@@ -1,20 +1,7 @@
 var validation = require("../utils/validation");
 var util = require("../utils/util");
 var games = [];
-var questions = [
-	"La chose la plus petite que j'ai vu, c'est ____",
-	"Si l'un d'entre vous devait être une licorne, qui serait cette personne ?",
-	"Votre devise favorite.",
-	"Un nom accrocheur pour une banque de sperme.",
-	"Une mauvaise raison d'appeller le 911.",
-	"Un bon nom pour un robot sexuel.",
-	"Un bon signe qui indique que votre maison est hantée.",
-	"une attraction touristique en enfer.",
-	"Le tweet d'un homme préhistorique.",
-	"Un animal que Noé n'aurait pas dû sauver.",
-	"Si tu ne réussis pas du premier coup, ...",
-	"Donne un nom à cette toute nouvelle MST."
-];
+var questions = require("../game/Question.json");
 
 exports = module.exports = function(io) {
 	io.on("connection", function(socket) {
@@ -138,7 +125,7 @@ exports = module.exports = function(io) {
 			// socket.to(room).emit("GameReady");
 
 			var players = [];
-			var Question = questions.slice(0);
+			var Question = questions.Questions;
 			var GroupQuestion = [];
 			var zgame;
 
@@ -303,15 +290,17 @@ exports = module.exports = function(io) {
 					if (socket.isHost === true) {
 						games.splice(games.indexOf(games[i], 1));
 						io.to(socket.room).emit("hostKill");
+						socket.isHost = false;
 					} else {
 						for (var y in games[i].players) {
 							if (games[i].players[y].id === socket.pseudo) {
-								games[i].players.splice(
-									games[i].players.indexOf(
-										games[i].players[y]
-									),
-									1
-								);
+								games[i].players[y].active = false;
+
+								var empty = {
+									question: ["", ""],
+									answer: ["", ""]
+								};
+								games[i].players[y].answers.push(empty);
 							} else {
 								if (
 									games[i].players.length === 0 ||
@@ -355,6 +344,10 @@ exports = module.exports = function(io) {
 					for (var j in games[i].players) {
 						nbjoueur = nbjoueur + 1;
 
+						if (games[i].players[j].active === false) {
+							nbjoueur = nbjoueur - 1;
+						}
+
 						if (games[i].players[j].id === pseudo) {
 							games[i].players[j].score =
 								games[i].players[j].score + 1;
@@ -390,7 +383,7 @@ exports = module.exports = function(io) {
 
 		socket.on("gameContinue", room => {
 			var players = [];
-			var Question = questions.slice(0);
+			var Question = questions.Questions;
 			var GroupQuestion = [];
 
 			for (var i in games) {
@@ -400,8 +393,15 @@ exports = module.exports = function(io) {
 					players.push(games[i].host);
 
 					for (var j in games[i].players) {
-						games[i].players[j].answers = [];
-						players.push(games[i].players[j]);
+						if (games[i].players[j].active === false) {
+							games[i].players.splice(
+								games[i].players.indexOf(games[i].players[j]),
+								1
+							);
+						} else {
+							games[i].players[j].answers = [];
+							players.push(games[i].players[j]);
+						}
 					}
 				}
 			}
